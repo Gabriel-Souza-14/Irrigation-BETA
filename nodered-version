@@ -1,0 +1,330 @@
+[
+    {
+        "id": "5e6e832b3401b44a",
+        "type": "tab",
+        "label": "Flow 8",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8cb46ca53fa135d2",
+        "type": "arduino in",
+        "z": "5e6e832b3401b44a",
+        "name": "Sensor de Úmidade",
+        "pin": "0",
+        "state": "ANALOG",
+        "arduino": "d530fb2b0b4c02d7",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "ab5b8bc98f9e0a2e"
+            ]
+        ]
+    },
+    {
+        "id": "782f6d8e3d8fb25d",
+        "type": "ui_gauge",
+        "z": "5e6e832b3401b44a",
+        "name": "",
+        "group": "825f8d94035c206e",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Gráfico em porcentagem",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 890,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "ab5b8bc98f9e0a2e",
+        "type": "change",
+        "z": "5e6e832b3401b44a",
+        "name": "Tranforma Topic em Int",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 60,
+        "wires": [
+            [
+                "bbf90c1f12c42f52"
+            ]
+        ]
+    },
+    {
+        "id": "bbf90c1f12c42f52",
+        "type": "range",
+        "z": "5e6e832b3401b44a",
+        "minin": "1023",
+        "maxin": "0",
+        "minout": "0",
+        "maxout": "100",
+        "action": "scale",
+        "round": true,
+        "property": "payload",
+        "name": "Regra de 3 para tranformar em %",
+        "x": 600,
+        "y": 60,
+        "wires": [
+            [
+                "782f6d8e3d8fb25d",
+                "3b84a9c993e1dc4f"
+            ]
+        ]
+    },
+    {
+        "id": "57386f8711c30f2e",
+        "type": "function",
+        "z": "5e6e832b3401b44a",
+        "name": "Função que transorma o sinal do sensor em logica booleana",
+        "func": "//Agora será feita a declaração de váriavel para a úmidade de solo\nvar soloseco = msg.payload;\n//se a umidade de solo cair a 10 entrara na condição verdadeira\nif(soloseco <= 10){\n//manda um sinal true para ativar o relé\nmsg.payload = true;\n}else{\n//se não o relé não é ativado, pois o solo ainda está úmido\nmsg.payload = false;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 120,
+        "wires": [
+            [
+                "f92cfdb9066fade1"
+            ]
+        ]
+    },
+    {
+        "id": "f92cfdb9066fade1",
+        "type": "link out",
+        "z": "5e6e832b3401b44a",
+        "name": "link out 1",
+        "mode": "link",
+        "links": [
+            "3ff8b4b9897b9a5b"
+        ],
+        "x": 635,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "3ff8b4b9897b9a5b",
+        "type": "link in",
+        "z": "5e6e832b3401b44a",
+        "name": "link in 1",
+        "links": [
+            "f92cfdb9066fade1"
+        ],
+        "x": 55,
+        "y": 200,
+        "wires": [
+            [
+                "cedacafcf6baa3c5",
+                "679ac869aca119db"
+            ]
+        ]
+    },
+    {
+        "id": "cedacafcf6baa3c5",
+        "type": "arduino out",
+        "z": "5e6e832b3401b44a",
+        "name": "Relé",
+        "pin": "13",
+        "state": "OUTPUT",
+        "arduino": "d530fb2b0b4c02d7",
+        "x": 170,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "e9e0cccdf3daf99a",
+        "type": "admin",
+        "z": "5e6e832b3401b44a",
+        "name": "WA Admin",
+        "whatsappLink": "a7b4e473c759603e",
+        "x": 710,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "679ac869aca119db",
+        "type": "function",
+        "z": "5e6e832b3401b44a",
+        "name": "Função que transforma nossa logica booleana em um tipo caractere",
+        "func": "\nif( msg.payload==true ){\n    msg.payload = \"Solo Irrigado\"\n}\nelse{\n    msg.payload = \"Solo Seco\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "4a3dde60e02c73da"
+            ]
+        ]
+    },
+    {
+        "id": "05b1d9821d4a1b2b",
+        "type": "chats-out",
+        "z": "5e6e832b3401b44a",
+        "name": "Mensagem que é enviada",
+        "whatsappLink": "a7b4e473c759603e",
+        "number": "+5547992570089",
+        "x": 930,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "4a3dde60e02c73da",
+        "type": "rbe",
+        "z": "5e6e832b3401b44a",
+        "name": "Filtro de Mensagem, para não enviar sinal o tempo todo",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 710,
+        "y": 260,
+        "wires": [
+            [
+                "05b1d9821d4a1b2b"
+            ]
+        ]
+    },
+    {
+        "id": "2495a7ad8322bb84",
+        "type": "link in",
+        "z": "5e6e832b3401b44a",
+        "name": "link in 2",
+        "links": [
+            "3b84a9c993e1dc4f"
+        ],
+        "x": 55,
+        "y": 120,
+        "wires": [
+            [
+                "57386f8711c30f2e"
+            ]
+        ]
+    },
+    {
+        "id": "3b84a9c993e1dc4f",
+        "type": "link out",
+        "z": "5e6e832b3401b44a",
+        "name": "link out 2",
+        "mode": "link",
+        "links": [
+            "2495a7ad8322bb84"
+        ],
+        "x": 795,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4afc59b5b4b42d1a",
+        "type": "ui_text",
+        "z": "5e6e832b3401b44a",
+        "group": "4484765319edeffb",
+        "order": 2,
+        "width": 7,
+        "height": 2,
+        "name": "",
+        "label": "Monitora a umidade do solo e converte sinal analogico em percentual, fazendo a irrigação automática do solo assim que ele chega a 10% ",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 500,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "21ca33b188f3647b",
+        "type": "ui_spacer",
+        "z": "5e6e832b3401b44a",
+        "name": "spacer",
+        "group": "4484765319edeffb",
+        "order": 1,
+        "width": 7,
+        "height": 1
+    },
+    {
+        "id": "d530fb2b0b4c02d7",
+        "type": "arduino-board",
+        "device": "COM9"
+    },
+    {
+        "id": "825f8d94035c206e",
+        "type": "ui_group",
+        "name": "Medidor",
+        "tab": "e8f599d7dd18fa45",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "a7b4e473c759603e",
+        "type": "whatsappLink",
+        "cName": "whatsapp-web",
+        "name": "Web",
+        "clientType": "waWebClient",
+        "onlineStatus": true,
+        "loopTime": "5"
+    },
+    {
+        "id": "4484765319edeffb",
+        "type": "ui_group",
+        "name": "PROJETO DE IOT - Irrigação automática",
+        "tab": "a907f9b97bc95101",
+        "order": 1,
+        "disp": true,
+        "width": 7,
+        "collapse": false
+    },
+    {
+        "id": "e8f599d7dd18fa45",
+        "type": "ui_tab",
+        "name": "monitoramento",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "a907f9b97bc95101",
+        "type": "ui_tab",
+        "name": "Inicio",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
